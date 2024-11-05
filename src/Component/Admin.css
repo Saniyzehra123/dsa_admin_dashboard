@@ -1,0 +1,46 @@
+.admin-container {
+    min-height: 100vh;
+  margin-top:120px ;
+  }
+  
+
+  .sidebar {
+    background-color: #f8f9fa;
+    height: 100vh;
+    position: fixed;
+  }
+  
+  .nav-link {
+    color: #000;
+    font-size: 16px;
+    padding: 15px;
+    transition: background 0.3s ease;
+  }
+  
+  .nav-link:hover, .nav-link.active {
+    background-color: #e9ecef;
+    color: #333;
+  }
+  
+  .main-content {
+    margin-left: 16.6%; /* To make space for sidebar */
+    padding: 20px;
+    background-color: #fff;
+  }
+  
+  @media (max-width: 768px) {
+    .sidebar {
+      height: auto;
+      position: relative;
+    }
+  
+    .main-content {
+      margin-left: 0;
+      padding: 10px;
+    }
+  
+    .nav-link {
+      padding: 10px;
+    }
+  }
+  
