@@ -36,8 +36,9 @@ const AddItems = () => {
   });
  
   const fetchCategories = async () => {
+   
     try {
-      let response = await axios.get('http://localhost:8080/api/adminitem/category');
+      let response = await axios.get(`${process.env.REACT_APP_BASE_URL}/adminitem/category`);
       let data = await response.data?.data;
       if (response.status === 200) {
        console.log("data", data)
@@ -52,7 +53,7 @@ const AddItems = () => {
 
   const fetchSizes = async () => {
     try {
-      let response = await axios.get('http://localhost:8080/api/adminitem/size');
+      let response = await axios.get(`${process.env.REACT_APP_BASE_URL}/adminitem/size`);
       let data = await response.data?.data;
       if (response.status === 200) {
         setSizes(data);
@@ -66,7 +67,7 @@ const AddItems = () => {
  
   const fetchColors = async () => {
     try {
-      const response = await axios.get('http://localhost:8080/api/adminitem/color');
+      const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/adminitem/color`);
       const data = response.data?.data;
       console.log("Colors:", data);
       setColors(data || []);
@@ -78,7 +79,7 @@ const AddItems = () => {
 
   const fetchSarees = async () => {
     try {
-      const response = await axios.get('http://localhost:8080/api/adminitem/saree');
+      const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/adminitem/saree`);
       const data = response.data?.data;
       console.log("Sarees:", data);
       setSarees(data || []);
@@ -90,7 +91,7 @@ const AddItems = () => {
 
   const fetchWeaves = async () => {
     try {
-      const response = await axios.get('http://localhost:8080/api/adminitem/weave');
+      const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/adminitem/weave`);
       const data = response.data?.data;
       console.log("Weaves:", data);
       setWeaves(data || []);
@@ -102,7 +103,7 @@ const AddItems = () => {
 
   const fetchOccasions = async () => {
     try {
-      const response = await axios.get('http://localhost:8080/api/adminitem/ocassion');
+      const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/adminitem/ocassion`);
       const data = response.data?.data;
       console.log("Occasions:", data);
       setOccasions(data || []);
@@ -116,7 +117,7 @@ const AddItems = () => {
 
   const fetchCountries = async () => {
     try {
-      const response = await axios.get('http://localhost:8080/api/adminitem/country');
+      const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/adminitem/country`);
       const data = response.data?.data;
       console.log("Countries:", data);
       setCountries(data || []);
@@ -144,13 +145,14 @@ const AddItems = () => {
         }));
     }
     
-    else if (id.startsWith('productImage')) {
-        const files = e.target.files;
-        setFormData((prevData) => ({
-            ...prevData,
-            images: [...prevData.images, ...Array.from(files)]
-        }));
-    } else {
+    // else if (id.startsWith('productImage')) {
+    //     const files = e.target.files;
+    //     setFormData((prevData) => ({
+    //         ...prevData,
+    //         images: [...prevData.images, ...Array.from(files)]
+    //     }));
+    // } 
+    else {
         setFormData((prevData) => ({
             ...prevData,
             [id]: value
@@ -158,62 +160,124 @@ const AddItems = () => {
     }
 };
 
+const handleImageUpload = (e, index) => {
+  const file = e.target.files[0];
+  setFormData((prev) => {
+    const updatedimages = [...prev.images];
+    updatedimages[index] = file; // Update the specific index with the selected file
+    return { ...prev, images: updatedimages };
+  });
+};
+
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+  //   const formDataToSend = new FormData();
+    
+  //   Object.keys(formData).forEach(key => {
+  //     if (key === 'images') {
+  //       formData.images.forEach(image => formDataToSend.append('images', image));
+  //     } else {
+  //       formDataToSend.append(key, formData[key]);
+  //     }
+  //   });
+
+    
+  //   try {
+
+  //     const response = await axios.post('http://localhost:8080/api/products', formData);
+  //     if (response.status === 201) {
+  //       // Reset form or redirect as needed
+  //       setFormData({
+  //         title: '',
+  //         images: [],
+  //         categoryId: '',
+  //         sizeId: '',
+  //         sareeTypeId: '',
+  //         weaveTypeId: '',
+  //         colorId: '',
+  //         occasion: '',
+  //         main_image_url:"",
+  //         weight: '',
+  //         price: '',
+  //         stockQuantity: '',
+  //         rating: '',
+  //         discount: '',
+  //         newArrival: '', 
+  //         boluse_des: '',
+  //         description: '',
+  //         productCode: '', // Added product code state
+  //         includedComponents:"",
+  //         countryId:''
+
+  //       });
+  //       alert('Product added successfully!');
+  //     }
+  //   } catch (error) {
+  //     console.error('Error adding product:', error);
+  //     setError(error.response?.data?.message || 'Error adding product');
+  //   }
+  // };
+
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    
+    const formDataToSend = new FormData();
+ 
+    formDataToSend.append("title", "df"); 
+
+    // Ensure all fields, including 'title', are appended correctly
+    Object.entries(formData).forEach(([key, value]) => {
+        if (key === 'images') {
+            formData.images.forEach(image => formDataToSend.append('images', image)); // Append each image
+        } else {
+            formDataToSend.append(key, value); // Append other fields
+        }
+    });
+
+    // Debugging: Check each field in FormData, especially 'title'
+    console.log('FormDataToSend (title):', formDataToSend.get('title')); // Should display the title value
+    console.log('FormDataToSend (all fields):', Array.from(formDataToSend.entries())); // Log all entries for verification
+
     try {
-      // const formDataToSend = {
-      //   colorId: formData.colorId,
-      //   sizeId: formData.sizeId,
-      //   occasionId: formData.occasion,
-      //   countryId: formData.countryId,
-      //   weaveTypeId: formData.weaveTypeId,
-      //   title: formData.title,
-      //   price: Number(formData.price),
-      //   discount: Number(formData.discount),
-      //   stockQuantityQuantity: Number(formData.stockQuantity),
-      //   images: formData.images.map(file => file.name),
-      //   main_image_url: formData.main_image_url,
-      //   weight: Number(formData.weight),
-      //   includedComponents: "Saree, Blouse",
-      //   boluse_des: formData.boluse_des,
-      //   newArrival: formData.newArrival === 'true',
-      //   sareeTypeId: formData.sareeTypeId,
-      //   productCode: formData.productCode 
-      // };
-
-      const response = await axios.post('http://localhost:8080/api/products', formData);
-      if (response.status === 201) {
-        // Reset form or redirect as needed
-        setFormData({
-          title: '',
-          images: [],
-          categoryId: '',
-          sizeId: '',
-          sareeTypeId: '',
-          weaveTypeId: '',
-          colorId: '',
-          occasion: '',
-          main_image_url:"",
-          weight: '',
-          price: '',
-          stockQuantity: '',
-          rating: '',
-          discount: '',
-          newArrival: '', 
-          boluse_des: '',
-          description: '',
-          productCode: '', // Added product code state
-          includedComponents:"",
-          countryId:''
-
+        const response = await axios.post('http://localhost:8080/api/products', formDataToSend, {
+            headers: { 'Content-Type': 'multipart/form-data' } // Ensure multipart format
         });
-        alert('Product added successfully!');
-      }
+        
+        if (response.status === 201) {
+            // Reset form or redirect as needed
+            setFormData({
+                title: '',
+                images: [],
+                categoryId: '',
+                sizeId: '',
+                sareeTypeId: '',
+                weaveTypeId: '',
+                colorId: '',
+                occasion: '',
+                main_image_url:"",
+                weight: '',
+                price: '',
+                stockQuantity: '',
+                rating: '',
+                discount: '',
+                newArrival: '', 
+                boluse_des: '',
+                description: '',
+                productCode: '', 
+                includedComponents:"",
+                countryId:''
+            });
+            alert('Product added successfully!');
+        }
     } catch (error) {
-      console.error('Error adding product:', error);
-      setError(error.response?.data?.message || 'Error adding product');
+        console.error('Error adding product:', error);
+        setError(error.response?.data?.message || 'Error adding product');
     }
-  };
+};
+
+
  
   if (error) return <div>Error: {error}</div>;
 
@@ -229,18 +293,18 @@ const AddItems = () => {
         </div>
 
         {/* Image Upload Section */}
-        {/* <div className="mb-3">
-          <label htmlFor="productImages" className="form-label">Upload Images</label>
+        <div className="mb-3">
+          <label htmlFor="productimages" className="form-label">Upload images</label>
           <div className="row">
             {[...Array(6)].map((_, index) => (
               <div className="col-md-3" key={index}>
-                <input type="file" className="form-control" id={`productImage${index + 1}`} onChange={handleChange} />
+                <input type="file" className="form-control" id={`images${index + 1}`} onChange={(e) => handleImageUpload(e, index)} />
               </div>
             ))}
           </div>
-        </div> */}
-        {/* <div className="mb-3">
-          <label htmlFor="productImages" className="form-label">Upload Images</label>
+        </div>
+     {/* <div className="mb-3">
+          <label htmlFor="productimages" className="form-label">Upload images</label>
           <div className="row">
             <div className="col-md-3">
               <input type="file" className="form-control" id="productImage1" />
@@ -255,7 +319,7 @@ const AddItems = () => {
               <input type="file" className="form-control" id="productImage4" />
             </div>
           </div>
-        </div> */}
+        </div>  */}
 
         {/* Product Category and Sizes */}
         <div className="row mb-3">

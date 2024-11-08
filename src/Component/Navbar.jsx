@@ -14,7 +14,7 @@ export default function AdminNavbar() {
       </div>
       <div className="logout">
              
-      <button type="button" class="btn btn-outline-dark">Logout</button>
+      <a type="button" href="/login" class="btn btn-outline-dark">Login</a>
       </div>
     </nav>
   );
