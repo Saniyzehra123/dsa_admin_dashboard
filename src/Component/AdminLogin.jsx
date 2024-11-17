@@ -37,21 +37,21 @@ const AdminLogin = () => {
   };
 
   useEffect(() => {
-    console.log("admin", admin);
+    console.log("admin",admin.token, isAuthenticated);
     // Ensure admin and admin.token are defined before attempting to decode the token
-    if (isAuthenticated && admin && admin.token) {
+    if (isAuthenticated && admin.token) {
       const loginData = decodeToken(admin.token);
       loginData['token'] = admin.token;
       sessionStorage.setItem('adminData', JSON.stringify(loginData)); // Store in session as adminData
       toast.success('Admin login successful!', { autoClose: 3000 });
       setTimeout(() => {
         navigate("/"); // Redirect to admin dashboard
-      }, 3000);
+      }, 2000);
       setLoginFormData({ email: '', password: '' });
     } else if (error) {
       toast.error(error, { autoClose: 3000 });
     }
-  }, [isAuthenticated, error, admin, navigate]);
+  }, [isAuthenticated, error, admin.token, navigate]);
   
   
 

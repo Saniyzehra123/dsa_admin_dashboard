@@ -20,10 +20,12 @@ export const adminLoginAction = (email, password) => async (dispatch) => {
   dispatch({ type: ADMIN_LOGIN_REQUEST });
   try {
     const { data } = await axios.post(`${process.env.REACT_APP_BASE_URL}/auth/admin/login`, { email, password });
+    let res = await data
     // Store both admin data and token in the payload
+    console.log("logdata",data)
     dispatch({
       type: ADMIN_LOGIN_SUCCESS,
-      payload: { admin: data.admin, token: data.token }
+      payload:res
     });
     
   } catch (error) {

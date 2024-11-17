@@ -35,6 +35,26 @@ const AddItems = () => {
     countryId:0
   });
  
+  const uploadFileToAPI = async (file) => {
+    try {
+      const formData = new FormData();
+      formData.append("image", file); // Add the file to FormData
+
+      // Send the POST request
+      const response = await axios.post(`${process.env.REACT_APP_BASE_URL}/adminitem/image`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data", // Ensure correct content type
+        },
+      });
+  
+      console.log("Upload Successful:", response.data);
+      return response.data;
+    } catch (error) {
+      console.error("Error uploading file:", error.response?.data || error.message);
+      throw error;
+    }
+  };
+  
   const fetchCategories = async () => {
    
     try {
@@ -160,63 +180,20 @@ const AddItems = () => {
     }
 };
 
-const handleImageUpload = (e, index) => {
+
+const handleImageUpload = async (e, index) => {
   const file = e.target.files[0];
-  setFormData((prev) => {
-    const updatedimages = [...prev.images];
-    updatedimages[index] = file; // Update the specific index with the selected file
-    return { ...prev, images: updatedimages };
-  });
+  if (file) {
+    try {
+      const uploadResponse = await uploadFileToAPI(file);
+      console.log(`File at index ${index} uploaded successfully`, uploadResponse);
+    } catch (error) {
+      console.error(`Error uploading file at index ${index}:`, error);
+    }
+  }
 };
 
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault();
-  //   const formDataToSend = new FormData();
-    
-  //   Object.keys(formData).forEach(key => {
-  //     if (key === 'images') {
-  //       formData.images.forEach(image => formDataToSend.append('images', image));
-  //     } else {
-  //       formDataToSend.append(key, formData[key]);
-  //     }
-  //   });
-
-    
-  //   try {
-
-  //     const response = await axios.post('http://localhost:8080/api/products', formData);
-  //     if (response.status === 201) {
-  //       // Reset form or redirect as needed
-  //       setFormData({
-  //         title: '',
-  //         images: [],
-  //         categoryId: '',
-  //         sizeId: '',
-  //         sareeTypeId: '',
-  //         weaveTypeId: '',
-  //         colorId: '',
-  //         occasion: '',
-  //         main_image_url:"",
-  //         weight: '',
-  //         price: '',
-  //         stockQuantity: '',
-  //         rating: '',
-  //         discount: '',
-  //         newArrival: '', 
-  //         boluse_des: '',
-  //         description: '',
-  //         productCode: '', // Added product code state
-  //         includedComponents:"",
-  //         countryId:''
-
-  //       });
-  //       alert('Product added successfully!');
-  //     }
-  //   } catch (error) {
-  //     console.error('Error adding product:', error);
-  //     setError(error.response?.data?.message || 'Error adding product');
-  //   }
-  // };
+ 
 
 
   const handleSubmit = async (e) => {
@@ -276,8 +253,6 @@ const handleImageUpload = (e, index) => {
         setError(error.response?.data?.message || 'Error adding product');
     }
 };
-
-
  
   if (error) return <div>Error: {error}</div>;
 
@@ -298,7 +273,12 @@ const handleImageUpload = (e, index) => {
           <div className="row">
             {[...Array(6)].map((_, index) => (
               <div className="col-md-3" key={index}>
-                <input type="file" className="form-control" id={`images${index + 1}`} onChange={(e) => handleImageUpload(e, index)} />
+                <input
+                  type="file"
+                  className="form-control"
+                  id={`images${index + 1}`}
+                  onChange={(e) => handleImageUpload(e, index)}
+                />
               </div>
             ))}
           </div>

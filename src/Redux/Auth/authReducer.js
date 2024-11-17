@@ -15,7 +15,6 @@ import {
 const initialState = {
   loading: false,
   admin: null,
-  token: null, // This will store the JWT token
   error: null,
   isAuthenticated: false,
   message: null,
@@ -71,7 +70,6 @@ export const adminLoginReducer = (state = initialState, action) => {
         ...state,
         loading: false,
         admin: payload.admin, // admin data
-        token: payload.token, // admin token
         isAuthenticated: true,
         error: null,
       };

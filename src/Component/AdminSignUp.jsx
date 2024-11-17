@@ -32,24 +32,46 @@ const AdminSignUp = () => {
       }));
     };
   
+    // const handleSubmit = async (e) => {
+    //   e.preventDefault();
+    //   if(formData.email === 'admin@gmail.com'){
+    //     await dispatch(adminRegisterAction(formData));
+    //     resetForm(); 
+    //   }
+    //   else{
+    //       alert("not authorise email")
+    //   }
+     
+    // };
     const handleSubmit = async (e) => {
       e.preventDefault();
-      await dispatch(adminRegisterAction(formData));
-      resetForm(); 
-    };
-  
-    useEffect(() => {
-      if (isAuthenticated) {
-        toast.success('Admin registered successfully!', { autoClose: 3000 });
-        setTimeout(() => {
-          navigate('/login');
-        }, 3000);
+      if (formData.email === 'admin@gmail.com') {
+          await dispatch(adminRegisterAction(formData));
+          toast.success("Admin registered successfully!", {
+              position: "top-right",
+              autoClose: 3000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+          });
+          resetForm(); 
+      } else {
+          toast.error("Not an authorized email!", {
+              position: "top-right",
+              autoClose: 3000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+          });
       }
-      if (error) {
-        toast.error(error, { autoClose: 3000 });
-      }
-    }, [isAuthenticated, error, navigate]);
+  };
   
+  
+     
     return (
       <div>
         <div className="container mt-48">
